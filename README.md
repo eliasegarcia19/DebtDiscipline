@@ -1,2 +1,0 @@
-# DebtDiscipline
-Debt Payoff App
