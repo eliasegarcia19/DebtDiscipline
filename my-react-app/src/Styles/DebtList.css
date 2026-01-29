@@ -81,3 +81,40 @@
 .debtItemBody {
   flex: 1;
 }
+/* Controls row */
+.controlsRow {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin: 10px 0 16px;
+}
+
+.select {
+  padding: 8px 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+/* Progress bars */
+.progressWrap {
+  margin-top: 10px;
+}
+
+.progressBar {
+  height: 10px;
+  border: 1px solid #ddd;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  width: var(--pct, 0%);
+}
+
+.progressText {
+  font-size: 12px;
+  opacity: 0.8;
+  margin-top: 6px;
+}
