@@ -1,6 +1,6 @@
 ## Debt Discipline
 ## Developer: Elias Garcia
-**DEBT DISCIPLINE** is a minimalistic website designed to track debt. The site features a clean, modern layout with easy navigation and a user-friendly tool. that allows to create a list of debts. If you're looking for a easy to use website to track your debts, you've come to the right place
+**DEBT DISCIPLINE** is a minimalistic website designed to track debt. The site features a clean, modern layout with easy navigation and a user-friendly tool that allows to create a list of debts. If you're looking for a easy to use website to track your debts, you've come to the right place
 ## Functionality
 * **List creation:** Allows users to easily type in name, balance, due day and monthly amount.
 * **Debt List:** Creates a separate box for each debt entry.
