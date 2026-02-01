@@ -1,70 +1,29 @@
-# Getting Started with Create React App
+## Debt Discipline
+## Developer: Elias Garcia
+**DEBT DISCIPLINE** is a minimalistic website designed to track debt. The site features a clean, modern layout with easy navigation and a user-friendly tool. that allows to create a list of debts. If you're looking for a easy to use website to track your debts, you've come to the right place
+## Functionality
+* **List creation:** Allows users to easily type in name, balance, due day and monthly amount.
+* **Debt List:** Creates a separate box for each debt entry.
+* **Mobile-Friendly Design:** Ensures the website is fully responsive and accessible on smartphones, tablets, and desktops for a smooth user experience across all devices.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Technologies Used
+* **HTML**
+* **CSS**
+* **JavaScript**
+* **React**
+## User Stories
+* As a user, I want to add and manage my debts in one place so that I can clearly track what I owe and my progress toward paying them off.
 
-## Available Scripts
+* As a user, I want to see visual indicators (such as progress bars and payoff dates) so that I can easily understand how close I am to becoming debt-free.
 
-In the project directory, you can run:
+* As a user, I want my debt information to be saved automatically so that my data is not lost when I refresh or return to the app later.
+## Wireframes
+## Debt Tracker Page - Desktop Version
+![Wireframe Preview](./public/images/DebtTrackerWireframe.png)
+## Contact Page - Desktop Version
+![Wireframe Preview](./public/images/DebtTrackerWireframe.png)
 
-### `npm start`
+## Future Improvements
+Planned enhancements include adding interest-aware payoff projections (snowball and avalanche methods), improving visual insights with charts and cleaner PDF reports, and introducing customization options such as manual dark/light mode and flexible payment schedules. These upgrades will make the app more accurate, more informative, and more personalized for long-term use.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
-
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## www.linkedin.com/in/elias-garcia-9994aa27
