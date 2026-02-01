@@ -11,7 +11,8 @@ function App() {
       <div className="App">
         <Header />
 
-        <main>
+        {/* MAIN CONTENT WRAPPER */}
+        <main className="appContent">
           <Routes>
             <Route path="/" element={<DebtList />} />
             <Route path="/contact" element={<Contact />} />

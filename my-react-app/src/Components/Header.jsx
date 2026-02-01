@@ -1,22 +1,31 @@
 import { NavLink } from "react-router-dom";
+import "../Styles/Header.css";
 
 function Header() {
-  const linkStyle = ({ isActive }) => ({
-    fontWeight: isActive ? 800 : 500,
-    textDecoration: isActive ? "underline" : "none",
-    marginRight: 12,
-  });
-
   return (
-    <header style={{ padding: 16 }}>
-      <h2 style={{ margin: 0 }}>Debt Discipline</h2>
-      <nav style={{ marginTop: 8 }}>
-        <NavLink to="/" style={linkStyle}>
-          Debt Tracker
-        </NavLink>
-        <NavLink to="/contact" style={linkStyle}>
-          Contact
-        </NavLink>
+    <header className="header">
+      <nav className="navbar">
+        <div className="brand">Debt Discipline</div>
+
+        <div className="navLinks">
+          <NavLink
+            to="/"
+            className={({ isActive }) =>
+              isActive ? "navLink navLinkActive" : "navLink"
+            }
+          >
+            Debt Tracker
+          </NavLink>
+
+          <NavLink
+            to="/contact"
+            className={({ isActive }) =>
+              isActive ? "navLink navLinkActive" : "navLink"
+            }
+          >
+            Contact
+          </NavLink>
+        </div>
       </nav>
     </header>
   );
