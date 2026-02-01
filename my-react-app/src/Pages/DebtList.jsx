@@ -1,5 +1,7 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import "../Styles/DebtList.css";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 
 const STORAGE_KEY = "debt_discipline_debts_v3";
 
@@ -52,12 +54,17 @@ function payoffProjection({ remainingBalance, monthlyAmount, dueDay }) {
   const months = Math.ceil(balance / monthly);
   const firstPayment = getFirstPaymentDate(dueDay);
   const paidByDate = addMonths(firstPayment, months - 1);
+
   return { months, paidBy: paidByDate };
 }
 
 function formatMonthYear(date) {
   if (!date) return "";
   return date.toLocaleString(undefined, { month: "short", year: "numeric" });
+}
+
+function makeId() {
+  return crypto?.randomUUID?.() ?? String(Date.now() + Math.random());
 }
 
 function loadDebtsFromStorage() {
@@ -67,18 +74,17 @@ function loadDebtsFromStorage() {
     const parsed = JSON.parse(raw);
     if (!Array.isArray(parsed)) return [];
 
-    // Normalize + migration support
     return parsed.map((d) => {
       const remaining = safeNumber(d.remainingBalance ?? d.balance ?? 0);
       const original = safeNumber(d.originalBalance ?? d.original ?? remaining);
 
       return {
-        id: d.id ?? (crypto?.randomUUID?.() ?? String(Date.now())),
+        id: d.id ?? makeId(),
         name: d.name ?? d.text ?? "Untitled debt",
         dueDay: normalizeDueDay(d.dueDay ?? 1),
         monthlyAmount: safeNumber(d.monthlyAmount ?? d.amount ?? 0),
         remainingBalance: remaining,
-        originalBalance: original > 0 ? original : remaining,
+        originalBalance: Math.max(original, remaining),
         completed: Boolean(d.completed),
       };
     });
@@ -86,16 +92,6 @@ function loadDebtsFromStorage() {
     console.error("Failed to load debts:", err);
     return [];
   }
-}
-
-function downloadJson(filename, data) {
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = filename;
-  a.click();
-  URL.revokeObjectURL(url);
 }
 
 /* ---------- component ---------- */
@@ -120,10 +116,7 @@ function DebtList() {
   const [editMonthlyAmount, setEditMonthlyAmount] = useState("");
   const [editRemainingBalance, setEditRemainingBalance] = useState("");
 
-  // Import file input ref
-  const importRef = useRef(null);
-
-  // Save whenever debts change
+  // ✅ Save whenever debts change
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(debts));
@@ -141,7 +134,9 @@ function DebtList() {
     const totalMonthly = debts.reduce((sum, d) => sum + safeNumber(d.monthlyAmount, 0), 0);
 
     const overallPct =
-      totalOriginal > 0 ? clamp(((totalOriginal - totalRemaining) / totalOriginal) * 100, 0, 100) : 0;
+      totalOriginal > 0
+        ? clamp(((totalOriginal - totalRemaining) / totalOriginal) * 100, 0, 100)
+        : 0;
 
     let overallMonths = null;
     let overallPaidBy = null;
@@ -175,7 +170,7 @@ function DebtList() {
 
     const dir = sortDir === "asc" ? 1 : -1;
 
-    const sorted = [...list].sort((a, b) => {
+    return [...list].sort((a, b) => {
       let av, bv;
 
       if (sortBy === "dueDay") {
@@ -193,8 +188,6 @@ function DebtList() {
       if (av > bv) return 1 * dir;
       return 0;
     });
-
-    return sorted;
   }, [debts, filter, sortBy, sortDir]);
 
   /* ---- actions ---- */
@@ -206,12 +199,12 @@ function DebtList() {
     const remaining = safeNumber(remainingBalance, 0);
 
     const newDebt = {
-      id: crypto?.randomUUID?.() ?? String(Date.now()),
+      id: makeId(),
       name: trimmed,
       dueDay: normalizeDueDay(dueDay),
       monthlyAmount: safeNumber(monthlyAmount, 0),
       remainingBalance: remaining,
-      originalBalance: remaining, // used for progress %
+      originalBalance: remaining,
       completed: false,
     };
 
@@ -263,8 +256,6 @@ function DebtList() {
 
         const newRemaining = safeNumber(editRemainingBalance, d.remainingBalance);
         const oldOriginal = safeNumber(d.originalBalance, 0);
-
-        // Keep originalBalance at least as large as remainingBalance (prevents negative progress)
         const newOriginal = oldOriginal > 0 ? Math.max(oldOriginal, newRemaining) : newRemaining;
 
         return {
@@ -281,53 +272,43 @@ function DebtList() {
     cancelEdit();
   };
 
-  const exportDebts = () => {
-    downloadJson("debts.json", debts);
-  };
+  const exportPdf = async () => {
+    const element = document.getElementById("debt-export-area");
+    if (!element) return;
 
-  const triggerImport = () => {
-    importRef.current?.click();
-  };
+    const canvas = await html2canvas(element, {
+      scale: 2,
+      useCORS: true,
+      backgroundColor: null,
+    });
 
-  const importDebts = async (file) => {
-    if (!file) return;
+    const imgData = canvas.toDataURL("image/png");
 
-    try {
-      const text = await file.text();
-      const parsed = JSON.parse(text);
+    const pdf = new jsPDF("p", "mm", "a4");
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
 
-      if (!Array.isArray(parsed)) {
-        alert("Import failed: JSON must be an array.");
-        return;
-      }
+    const imgWidth = pageWidth;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-      const normalized = parsed.map((d) => {
-        const remaining = safeNumber(d.remainingBalance ?? d.balance ?? 0);
-        const original = safeNumber(d.originalBalance ?? d.original ?? remaining);
+    let heightLeft = imgHeight;
+    let position = 0;
 
-        return {
-          id: d.id ?? (crypto?.randomUUID?.() ?? String(Date.now())),
-          name: String(d.name ?? d.text ?? "Untitled debt"),
-          dueDay: normalizeDueDay(d.dueDay ?? 1),
-          monthlyAmount: safeNumber(d.monthlyAmount ?? d.amount ?? 0),
-          remainingBalance: remaining,
-          originalBalance: original > 0 ? original : remaining,
-          completed: Boolean(d.completed),
-        };
-      });
+    pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
 
-      // Replace current list (simple + predictable)
-      setDebts(normalized);
-    } catch (err) {
-      console.error(err);
-      alert("Import failed: invalid JSON file.");
-    } finally {
-      if (importRef.current) importRef.current.value = "";
+    while (heightLeft > 0) {
+      position -= pageHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
     }
+
+    pdf.save("debt-tracker.pdf");
   };
 
   return (
-    <div className="debtListPage">
+    <div className="debtListPage" id="debt-export-area">
       <h1 className="debtListTitle">Debt Tracker</h1>
 
       <p className="debtListSummary">
@@ -424,7 +405,7 @@ function DebtList() {
         </div>
       </form>
 
-      {/* Filter / Sort / Export-Import controls */}
+      {/* Filter / Sort / Export controls */}
       <div className="controlsRow">
         <FilterButton active={filter === "all"} onClick={() => setFilter("all")}>
           All
@@ -455,21 +436,9 @@ function DebtList() {
           <option value="desc">Desc</option>
         </select>
 
-        <button className="smallButton" type="button" onClick={exportDebts}>
-          Export JSON
+        <button className="smallButton" type="button" onClick={exportPdf}>
+          Export PDF
         </button>
-
-        <button className="smallButton" type="button" onClick={triggerImport}>
-          Import JSON
-        </button>
-
-        <input
-          ref={importRef}
-          type="file"
-          accept="application/json"
-          style={{ display: "none" }}
-          onChange={(e) => importDebts(e.target.files?.[0])}
-        />
       </div>
 
       {/* List */}
@@ -485,8 +454,7 @@ function DebtList() {
             const proj = payoffProjection(debt);
             const original = safeNumber(debt.originalBalance, safeNumber(debt.remainingBalance, 0));
             const remaining = safeNumber(debt.remainingBalance, 0);
-            const pct =
-              original > 0 ? clamp(((original - remaining) / original) * 100, 0, 100) : 0;
+            const pct = original > 0 ? clamp(((original - remaining) / original) * 100, 0, 100) : 0;
 
             return (
               <li key={debt.id} className="debtItem">
@@ -500,10 +468,9 @@ function DebtList() {
 
                     {!isEditing ? (
                       <span
-                        className={[
-                          "debtText",
-                          debt.completed ? "debtTextCompleted" : "",
-                        ].join(" ")}
+                        className={["debtText", debt.completed ? "debtTextCompleted" : ""].join(
+                          " "
+                        )}
                       >
                         {debt.name}
                       </span>
@@ -595,13 +562,21 @@ function DebtList() {
                     >
                       Edit
                     </button>
-                    <button className="smallButton" type="button" onClick={() => removeDebt(debt.id)}>
+                    <button
+                      className="smallButton"
+                      type="button"
+                      onClick={() => removeDebt(debt.id)}
+                    >
                       Remove
                     </button>
                   </div>
                 ) : (
                   <div className="actionsRow">
-                    <button className="smallButton primaryButton" type="button" onClick={() => saveEdit(debt.id)}>
+                    <button
+                      className="smallButton primaryButton"
+                      type="button"
+                      onClick={() => saveEdit(debt.id)}
+                    >
                       Save
                     </button>
                     <button className="smallButton" type="button" onClick={cancelEdit}>
