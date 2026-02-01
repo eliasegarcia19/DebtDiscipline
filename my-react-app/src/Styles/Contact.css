@@ -1,0 +1,88 @@
+/* src/Styles/Contact.css */
+
+.contactPage {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+.contactTitle {
+  margin-bottom: 8px;
+}
+
+.contactSubtitle {
+  margin-top: 0;
+  opacity: 0.8;
+}
+
+.contactForm {
+  display: grid;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.contactRow2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+@media (max-width: 720px) {
+  .contactRow2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+.contactField {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.contactLabel {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+.contactInput,
+.contactTextarea {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.contactTextarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.contactButtonRow {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.contactButton {
+  padding: 10px 14px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  cursor: pointer;
+  background: transparent;
+  font-weight: 700;
+}
+
+.contactHint {
+  font-size: 12px;
+  opacity: 0.75;
+}
+
+.previewBox {
+  margin-top: 14px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 12px;
+  overflow: auto;
+  font-size: 12px;
+  opacity: 0.9;
+}
