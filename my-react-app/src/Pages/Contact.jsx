@@ -60,7 +60,7 @@ function Contact() {
     <div className="contactPage">
       <h1 className="contactTitle">Contact</h1>
       <p className="contactSubtitle">
-        Send a message. This form is fully controlled — typing updates React state immediately.
+        Send a message and we’ll get back to you as soon as possible.
       </p>
 
       <form className="contactForm" onSubmit={handleSubmit}>
@@ -130,7 +130,7 @@ function Contact() {
           <button className="contactButton" type="submit">
             Submit
           </button>
-          <span className="contactHint">State updates on every keystroke.</span>
+          <span className="contactHint"></span>
         </div>
       </form>
     </div>
