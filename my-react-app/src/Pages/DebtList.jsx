@@ -94,6 +94,19 @@ function loadDebtsFromStorage() {
   }
 }
 
+/* ---------- small components ---------- */
+function FilterButton({ active, children, onClick }) {
+  return (
+    <button
+      type="button"
+      className={["filterButton", active ? "filterButtonActive" : ""].join(" ")}
+      onClick={onClick}
+    >
+      {children}
+    </button>
+  );
+}
+
 /* ---------- component ---------- */
 function DebtList() {
   const [debts, setDebts] = useState(() => loadDebtsFromStorage());
@@ -164,7 +177,6 @@ function DebtList() {
 
   const filteredAndSorted = useMemo(() => {
     let list = debts;
-
     if (filter === "completed") list = list.filter((d) => d.completed);
     if (filter === "incomplete") list = list.filter((d) => !d.completed);
 
@@ -204,7 +216,7 @@ function DebtList() {
       dueDay: normalizeDueDay(dueDay),
       monthlyAmount: safeNumber(monthlyAmount, 0),
       remainingBalance: remaining,
-      originalBalance: remaining,
+      originalBalance: remaining, // baseline for progress
       completed: false,
     };
 
@@ -276,35 +288,45 @@ function DebtList() {
     const element = document.getElementById("debt-export-area");
     if (!element) return;
 
-    const canvas = await html2canvas(element, {
-      scale: 2,
-      useCORS: true,
-      backgroundColor: null,
-    });
+    element.classList.add("exportMode");
+    await new Promise((r) => requestAnimationFrame(r));
 
-    const imgData = canvas.toDataURL("image/png");
+    try {
+      const canvas = await html2canvas(element, {
+        scale: 3,
+        useCORS: true,
+        backgroundColor: "#ffffff",
+        windowWidth: element.scrollWidth,
+        scrollX: 0,
+        scrollY: -window.scrollY,
+      });
 
-    const pdf = new jsPDF("p", "mm", "a4");
-    const pageWidth = pdf.internal.pageSize.getWidth();
-    const pageHeight = pdf.internal.pageSize.getHeight();
+      const imgData = canvas.toDataURL("image/jpeg", 0.95);
 
-    const imgWidth = pageWidth;
-    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      const pdf = new jsPDF("p", "pt", "a4");
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
 
-    let heightLeft = imgHeight;
-    let position = 0;
+      const imgWidth = pageWidth;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-    pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
-    heightLeft -= pageHeight;
+      let heightLeft = imgHeight;
+      let position = 0;
 
-    while (heightLeft > 0) {
-      position -= pageHeight;
-      pdf.addPage();
-      pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+      pdf.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight);
       heightLeft -= pageHeight;
-    }
 
-    pdf.save("debt-tracker.pdf");
+      while (heightLeft > 0) {
+        position -= pageHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+      }
+
+      pdf.save("debt-tracker.pdf");
+    } finally {
+      element.classList.remove("exportMode");
+    }
   };
 
   return (
@@ -342,7 +364,8 @@ function DebtList() {
           <div className="progressFill" style={{ "--pct": `${counts.overallPct}%` }} />
         </div>
         <div className="progressText">
-          {money(counts.totalOriginal - counts.totalRemaining)} paid • {money(counts.totalRemaining)} remaining
+          {money(counts.totalOriginal - counts.totalRemaining)} paid •{" "}
+          {money(counts.totalRemaining)} remaining
         </div>
       </div>
 
@@ -452,9 +475,13 @@ function DebtList() {
             const isEditing = editingId === debt.id;
 
             const proj = payoffProjection(debt);
-            const original = safeNumber(debt.originalBalance, safeNumber(debt.remainingBalance, 0));
+            const original = safeNumber(
+              debt.originalBalance,
+              safeNumber(debt.remainingBalance, 0)
+            );
             const remaining = safeNumber(debt.remainingBalance, 0);
-            const pct = original > 0 ? clamp(((original - remaining) / original) * 100, 0, 100) : 0;
+            const pct =
+              original > 0 ? clamp(((original - remaining) / original) * 100, 0, 100) : 0;
 
             return (
               <li key={debt.id} className="debtItem">
@@ -562,11 +589,7 @@ function DebtList() {
                     >
                       Edit
                     </button>
-                    <button
-                      className="smallButton"
-                      type="button"
-                      onClick={() => removeDebt(debt.id)}
-                    >
+                    <button className="smallButton" type="button" onClick={() => removeDebt(debt.id)}>
                       Remove
                     </button>
                   </div>
@@ -592,17 +615,4 @@ function DebtList() {
     </div>
   );
 }
-
-function FilterButton({ active, children, onClick }) {
-  return (
-    <button
-      type="button"
-      className={["filterButton", active ? "filterButtonActive" : ""].join(" ")}
-      onClick={onClick}
-    >
-      {children}
-    </button>
-  );
-}
-
 export default DebtList;

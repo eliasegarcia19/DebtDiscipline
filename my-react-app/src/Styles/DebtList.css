@@ -174,9 +174,10 @@
 .progressFill {
   height: 100%;
   width: var(--pct, 0%);
-  background: #111;                 /* ✅ makes it visible */
-  transition: width 220ms ease;     /* ✅ animated movement */
+  background: #111;             /* visible fill */
+  transition: width 220ms ease; /* smooth animation */
 }
+
 @media (prefers-color-scheme: dark) {
   .debtInput,
   .miniInput,
@@ -185,6 +186,8 @@
     border-color: rgba(229, 231, 235, 0.16);
     color: rgba(229, 231, 235, 0.92);
   }
+}
+
 
   .pill,
   .smallButton,
@@ -202,4 +205,54 @@
   .progressFill {
     background: rgba(229, 231, 235, 0.9);
   }
+/* ============================
+   EXPORT MODE – HIGH CONTRAST
+   ============================ */
+
+/* ============================
+   EXPORT MODE – HIGH CONTRAST
+   ============================ */
+
+.exportMode {
+  background: #ffffff !important;
+  color: #111111 !important;
 }
+
+/* kill opacity everywhere */
+.exportMode * {
+  opacity: 1 !important;
+  color: #111111 !important;
+}
+
+/* hide interactive UI */
+.exportMode .debtForm,
+.exportMode .controlsRow,
+.exportMode .actionsRow {
+  display: none !important;
+}
+
+/* make borders visible */
+.exportMode .pill,
+.exportMode .debtItem,
+.exportMode .progressBar {
+  border-color: #bbbbbb !important;
+}
+
+/* progress bar readability */
+.exportMode .progressBar {
+  background: #f3f3f3 !important;
+}
+
+.exportMode .progressFill {
+  background: #111111 !important;
+}
+
+/* avoid splitting list items */
+.exportMode .debtItem {
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+
+
+/* --- End of DebtList.css --- */
