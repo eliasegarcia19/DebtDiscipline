@@ -1,0 +1,19 @@
+{
+  "files": {
+    "main.css": "/DebtDiscipline/static/css/main.f32858c6.css",
+    "main.js": "/DebtDiscipline/static/js/main.ccbb2f4d.js",
+    "static/js/977.002546ef.chunk.js": "/DebtDiscipline/static/js/977.002546ef.chunk.js",
+    "static/js/455.08e437d5.chunk.js": "/DebtDiscipline/static/js/455.08e437d5.chunk.js",
+    "static/js/453.6bd4553c.chunk.js": "/DebtDiscipline/static/js/453.6bd4553c.chunk.js",
+    "index.html": "/DebtDiscipline/index.html",
+    "main.f32858c6.css.map": "/DebtDiscipline/static/css/main.f32858c6.css.map",
+    "main.ccbb2f4d.js.map": "/DebtDiscipline/static/js/main.ccbb2f4d.js.map",
+    "977.002546ef.chunk.js.map": "/DebtDiscipline/static/js/977.002546ef.chunk.js.map",
+    "455.08e437d5.chunk.js.map": "/DebtDiscipline/static/js/455.08e437d5.chunk.js.map",
+    "453.6bd4553c.chunk.js.map": "/DebtDiscipline/static/js/453.6bd4553c.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.f32858c6.css",
+    "static/js/main.ccbb2f4d.js"
+  ]
+}
