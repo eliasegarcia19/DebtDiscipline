@@ -21,7 +21,7 @@
 ## Debt Tracker Page - Desktop Version
 ![Wireframe Preview](./my-react-app/public/images/DebtTrackerWireframe.png)
 ## Contact Page - Desktop Version
-![Wireframe Preview](./my-react-app/public/images/DebtTrackerWireframe.png)
+![Wireframe Preview](./my-react-app/public/images/ContactPageWireframe.png)
 
 ## Future Improvements
 Planned enhancements include adding interest-aware payoff projections (snowball and avalanche methods), improving visual insights with charts and cleaner PDF reports, and introducing customization options such as manual dark/light mode and flexible payment schedules. These upgrades will make the app more accurate, more informative, and more personalized for long-term use.
